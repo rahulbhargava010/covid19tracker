@@ -1,26 +1,48 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import { fetchData } from "./api"
+
+import 'bootstrap/dist/css/bootstrap.min.css'
+
+import { Cards, Chart, CountryPicker } from './components'
+
+class App extends React.Component {
+
+  constructor() {
+    super()
+    this.state = {
+      data: {},
+      countryDatq: {}
+    }
+  }
+
+  async componentDidMount(){
+    const fetchedData = await fetchData()
+
+    this.setState({
+      data: fetchedData
+    })
+  }
+
+  hanldeCountryChange = async (country) => {
+    const fetchedData = await fetchData(country)
+    // console.log(fetchedData)
+    this.setState({
+      data: fetchedData
+    })
+  }
+
+  render() {
+    const { data } = this.state
+    return (
+      <div className="container">
+        <Cards data = {data} />
+        <CountryPicker hanldeCountryChange = {this.hanldeCountryChange} />
+        <Chart />      
+      </div>
+    );
+  }
 }
 
 export default App;
